@@ -52,3 +52,20 @@ def loadDF_From_CSV(name:str):
     path=os.path.join(csv_export,f"{name}.csv")
     df = pd.read_csv(path)
     return df
+
+import os
+
+def check_folder(path: str | list[str]):
+    """
+    Check if a given folder exists, and if not, create it.
+
+    Args:
+        path (str or list[str]): The folder path (or list of folder paths) to check and create if necessary.
+    """
+    if isinstance(path, list):
+        for folder in path:
+            if not os.path.exists(folder):
+                os.makedirs(folder)
+    else:
+        if not os.path.exists(path):
+            os.makedirs(path)

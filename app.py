@@ -4,6 +4,7 @@ from helpers import *
 import duckdb
 
 try:
+    check_folder([data_folder,csv_export,pkl_export])
     # Load JSON data into DataFrames
     frs = json2df(frs_name, "string_list_data")
     fws = json2df(fws_name, ['relationships_following', 'string_list_data'])
