@@ -1,3 +1,4 @@
-data/input/*
+data/input/html/*
+data/input/json/*
 data/export/*
 logs/*
