@@ -1,10 +1,10 @@
 from __future__ import annotations
 import logging
 import sys
-import datetime
 import time
 
 from src.config import AppConstants as C
+from src.utils.timeutil import tr_time_tuple
 
 def setup_logging(level: int = logging.INFO) -> None:
     """Configure root logging to write to logs/app.log and also print to console."""
@@ -14,22 +14,9 @@ def setup_logging(level: int = logging.INFO) -> None:
     root = logging.getLogger()
     root.setLevel(level)
 
-    # Try to use Türkiye timezone (Europe/Istanbul). Fallback to local time if tz data not available.
-    tz: datetime.tzinfo | None = None
-    try:
-        from zoneinfo import ZoneInfo  # Python 3.9+
-        try:
-            tz = ZoneInfo("Europe/Istanbul")
-        except Exception:
-            tz = None
-    except Exception:
-        tz = None
-
+    # Use shared Türkiye timezone converter
     def _tr_time_converter(secs: float) -> time.struct_time:
-        """Return time tuple in Türkiye timezone for logging formatter."""
-        if tz is not None:
-            return datetime.datetime.fromtimestamp(secs, tz).timetuple()
-        return time.localtime(secs)
+        return tr_time_tuple(secs)
 
     fmt = logging.Formatter(
         fmt="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
