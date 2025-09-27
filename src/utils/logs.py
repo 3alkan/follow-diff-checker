@@ -1,0 +1,55 @@
+from __future__ import annotations
+import logging
+import sys
+import datetime
+import time
+
+from ..config import AppConstants as C
+
+def setup_logging(level: int = logging.INFO) -> None:
+    """Configure root logging to write to logs/app.log and also print to console."""
+    if getattr(logging, "_utils_logs_configured", False):
+        return
+
+    root = logging.getLogger()
+    root.setLevel(level)
+
+    # Try to use Türkiye timezone (Europe/Istanbul). Fallback to local time if tz data not available.
+    tz: datetime.tzinfo | None = None
+    try:
+        from zoneinfo import ZoneInfo  # Python 3.9+
+        try:
+            tz = ZoneInfo("Europe/Istanbul")
+        except Exception:
+            tz = None
+    except Exception:
+        tz = None
+
+    def _tr_time_converter(secs: float) -> time.struct_time:
+        """Return time tuple in Türkiye timezone for logging formatter."""
+        if tz is not None:
+            return datetime.datetime.fromtimestamp(secs, tz).timetuple()
+        return time.localtime(secs)
+
+    fmt = logging.Formatter(
+        fmt="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        # Türkiye-style datetime: DD.MM.YYYY HH:MM:SS
+        datefmt="%d.%m.%Y %H:%M:%S",
+    )
+    # Ensure formatter uses TR timezone
+    fmt.converter = _tr_time_converter  # type: ignore[attr-defined]
+
+    file_path=C.logs_dir / "app.log"
+    # File handler
+    file_handler = logging.FileHandler(file_path, encoding="utf-8")
+    file_handler.setLevel(level)
+    file_handler.setFormatter(fmt)
+    root.addHandler(file_handler)
+
+    # Console handler
+    console_handler = logging.StreamHandler(stream=sys.stdout)
+    console_handler.setLevel(level)
+    console_handler.setFormatter(fmt)
+    root.addHandler(console_handler)
+
+    logging._utils_logs_configured = True  # type: ignore[attr-defined]
