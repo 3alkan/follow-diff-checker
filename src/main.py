@@ -1,8 +1,20 @@
+"""Entry point for IG Follow Diff.
+
+Loads Instagram export JSON from data/input, computes the difference
+between who you follow and who follows you, and generates HTML reports
+under data/export/.
+"""
+
 import os
 import sys
 from pathlib import Path
 
 def _update_sys_path():
+    """Ensure project root is on sys.path and set CWD to root.
+
+    This lets you run `python src/main.py` from repository root
+    without installation.
+    """
 
     root_dir = Path(__file__).resolve().parents[1]
     if str(root_dir) not in sys.path:
@@ -20,6 +32,7 @@ from src.utils.export import generate_html
 from src.utils.logs import setup_logging
 
 def main():
+    """Run the pipeline: load -> parse -> diff -> export HTML."""
     setup_logging()
     
     followers_path = C.input_dir / f"{C.followers_basename}.json"
@@ -39,7 +52,9 @@ def main():
         logging.warning("Failed to parse followers or followings data.")
         return
     
+    # Users you follow who don't follow you back
     fwings_fwers=set(followings.keys()) - set(followers.keys())
+    # Users who follow you but you don't follow back
     fwers_fwings=set(followers.keys()) - set(followings.keys())
 
     if fwings_fwers:

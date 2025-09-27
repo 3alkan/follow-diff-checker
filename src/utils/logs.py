@@ -1,4 +1,8 @@
 from __future__ import annotations
+"""Logging configuration utilities.
+
+Configures root logger to write to console and logs/app.log using Türkiye time.
+"""
 import logging
 import sys
 import time
@@ -7,7 +11,7 @@ from src.config import AppConstants as C
 from src.utils.timeutil import tr_time_tuple
 
 def setup_logging(level: int = logging.INFO) -> None:
-    """Configure root logging to write to logs/app.log and also print to console."""
+    """Configure root logging to file and console once for the process."""
     if getattr(logging, "_utils_logs_configured", False):
         return
 

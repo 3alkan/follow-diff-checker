@@ -1,7 +1,14 @@
 from src.ig import FollowerChange, FollowingChange
 
 def parse_followers(data: list) -> dict[str, FollowerChange]:
-    """Parse follower JSON into mapping of username -> FollowerChange."""
+    """Parse followers export into a mapping keyed by username.
+
+    Expected input shape (simplified):
+        [ { "string_list_data": [ { "href": str, "value": str, "timestamp": int } ] } ]
+
+    Returns:
+        dict[str, FollowerChange]: map of username -> FollowerChange
+    """
     try:
         followers = {}
         for item in data:
@@ -24,7 +31,14 @@ def parse_followers(data: list) -> dict[str, FollowerChange]:
         return {}
 
 def parse_followings(data: dict) -> dict[str, FollowingChange]:
-    """Parse following JSON into mapping of username -> FollowingChange."""
+    """Parse following export into a mapping keyed by username.
+
+    Expected input shape (simplified):
+        { "relationships_following": [ { "string_list_data": [ { "href": str, "value": str, "timestamp": int } ] } ] }
+
+    Returns:
+        dict[str, FollowingChange]: map of username -> FollowingChange
+    """
     try:
         followings = {}
         data:list = data.get('relationships_following')

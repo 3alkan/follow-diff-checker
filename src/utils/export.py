@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+"""HTML export helpers.
+
+Functions here create static HTML reports under `data/export/`.
+"""
+
 import logging
 from html import escape
 from pathlib import Path
@@ -9,49 +14,50 @@ from src.utils.timeutil import format_ts_tr, now_tr
 
 
 def _to_istanbul_dt(ts):
-	return format_ts_tr(ts)
+  """Format a timestamp into Türkiye local time string."""
+  return format_ts_tr(ts)
 
 
 def generate_html(data: dict, keys: set, title: str, out_name: str) -> None:
-    """Generate an HTML report under export dir using selected usernames.
+  """Generate an HTML report under export dir using selected usernames.
 
-    Args:
-        data: Mapping of username -> object with attributes/keys: username, profile_url, timestamp.
-        keys: Set of usernames to include in the report.
-        title: Title to show in the HTML report.
-        out_name: Output filename (e.g., 'following_not_followed_back.html').
-    """
-    try:
-        export_path: Path = C.export_dir / out_name
+  Args:
+    data: Mapping of username -> object with attributes: username, profile_url, timestamp.
+    keys: Set of usernames to include in the report.
+    title: Title to show in the HTML report.
+    out_name: Output filename (e.g., 'following_not_followed_back.html').
+  """
+  try:
+    export_path: Path = C.export_dir / out_name
 
-        # Build rows
-        rows: list[str] = []
-        for username in sorted(keys, key=lambda s: s.lower()):
-            item = data.get(username)
-            if not item:
-                continue
-            # Support attribute-like access
-            uname = getattr(item, "username", None)
-            purl = getattr(item, "profile_url", None)
-            ts = getattr(item, "timestamp", None)
-			
-            if not (uname and purl and ts):
-                continue  
-	
-            ts_fmt = _to_istanbul_dt(ts)
+    # Build rows
+    rows: list[str] = []
+    for username in sorted(keys, key=lambda s: s.lower()):
+      item = data.get(username)
+      if not item:
+        continue
+      # Support attribute-like access
+      uname = getattr(item, "username", None)
+      purl = getattr(item, "profile_url", None)
+      ts = getattr(item, "timestamp", None)
 
-            uname_e = escape(str(uname))
-            purl_e = escape(str(purl))
-            ts_e = escape(ts_fmt)
+      if not (uname and purl and ts):
+        continue
 
-            link = f"<a href=\"{purl_e}\" target=\"_blank\">@{uname_e}</a>" if purl_e else f"@{uname_e}"
-            rows.append(
-                f"<tr><td>{link}</td><td>{purl_e}</td><td>{ts_e}</td></tr>"
-            )
+      ts_fmt = _to_istanbul_dt(ts)
 
-        generated_at = now_tr()
+      uname_e = escape(str(uname))
+      purl_e = escape(str(purl))
+      ts_e = escape(ts_fmt)
 
-        html = f"""
+      link = f"<a href=\"{purl_e}\" target=\"_blank\">@{uname_e}</a>" if purl_e else f"@{uname_e}"
+      rows.append(
+        f"<tr><td>{link}</td><td>{purl_e}</td><td>{ts_e}</td></tr>"
+      )
+
+    generated_at = now_tr()
+
+    html = f"""
 <!DOCTYPE html>
 <html lang=\"tr\">
 <head>
@@ -88,6 +94,6 @@ def generate_html(data: dict, keys: set, title: str, out_name: str) -> None:
   </body>
 </html>
 """
-        export_path.write_text(html, encoding="utf-8")
-    except Exception as e:
-        logging.error(f"Failed to generate HTML '{out_name}': {e}")
+    export_path.write_text(html, encoding="utf-8")
+  except Exception as e:
+    logging.error(f"Failed to generate HTML '{out_name}': {e}")

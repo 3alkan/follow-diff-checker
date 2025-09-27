@@ -1,4 +1,5 @@
 from __future__ import annotations
+"""Time utilities with preference for Türkiye (Europe/Istanbul) timezone."""
 
 import datetime
 import time

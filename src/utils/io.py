@@ -1,3 +1,5 @@
+"""I/O helpers for filesystem paths and JSON loading."""
+
 import json
 import logging
 from pathlib import Path
@@ -21,7 +23,10 @@ def make_path_exists(path: Path | list[Path]) -> None:
         _ensure(path)
 
 def load_json(path:Path) -> object:
-    """Load JSON data from a file."""
+    """Load JSON data from a file.
+
+    Returns an empty dict on error/missing file to keep callers simple.
+    """
     if not path.exists():
         logging.warning(f"File {path} does not exist.")
         return {}
