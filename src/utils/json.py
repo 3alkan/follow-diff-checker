@@ -1,7 +1,7 @@
 from src.ig import FollowerChange, FollowingChange
 
-def parse_followers(data:list)->dict[str, FollowerChange]:
-    """Parse follower data into a list of FollowerChange objects."""
+def parse_followers(data: list) -> dict[str, FollowerChange]:
+    """Parse follower JSON into mapping of username -> FollowerChange."""
     try:
         followers = {}
         for item in data:
@@ -23,8 +23,8 @@ def parse_followers(data:list)->dict[str, FollowerChange]:
         print(f"Error parsing followers: {e}")
         return {}
 
-def parse_followings(data:dict)->dict[str, FollowingChange]:
-    """Parse following data into a list of FollowingChange objects."""
+def parse_followings(data: dict) -> dict[str, FollowingChange]:
+    """Parse following JSON into mapping of username -> FollowingChange."""
     try:
         followings = {}
         data:list = data.get('relationships_following')

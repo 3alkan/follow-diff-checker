@@ -2,13 +2,23 @@ import json
 import logging
 from pathlib import Path
 
-def make_path_exists(path:Path | list[Path]) -> None:
-    """Ensure that the directory for the given path exists."""
+def make_path_exists(path: Path | list[Path]) -> None:
+    """Ensure that required directories exist.
+
+    If a Path looks like a file path (has a suffix), its parent directory
+    will be created. If it looks like a directory (no suffix), the directory
+    itself will be created.
+    """
+    def _ensure(p: Path) -> None:
+        # Heuristic: if it has a suffix (e.g. ".json"), treat as a file path
+        target = p.parent if p.suffix else p
+        target.mkdir(parents=True, exist_ok=True)
+
     if isinstance(path, list):
         for p in path:
-            p.parent.mkdir(parents=True, exist_ok=True)
+            _ensure(p)
     else:
-        path.parent.mkdir(parents=True, exist_ok=True)
+        _ensure(path)
 
 def load_json(path:Path) -> object:
     """Load JSON data from a file."""

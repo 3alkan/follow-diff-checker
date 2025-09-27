@@ -22,8 +22,8 @@ from src.utils.logs import setup_logging
 def main():
     setup_logging()
     
-    followers_path = C.json_input_dir / f"{C.followers_basename}.json"
-    followings_path = C.json_input_dir / f"{C.followings_basename}.json"
+    followers_path = C.input_dir / f"{C.followers_basename}.json"
+    followings_path = C.input_dir / f"{C.followings_basename}.json"
 
     followers = load_json(followers_path)
     followings = load_json(followings_path)
