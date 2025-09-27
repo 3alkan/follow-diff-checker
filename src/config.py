@@ -13,4 +13,3 @@ class AppConstants:
     make_path_exists([logs_dir, data_dir, input_dir, html_input_dir, json_input_dir, export_dir])
     followers_basename = "followers_1"
     followings_basename = "following"
-    pending_follow_requests_basename = "pending_follow_requests"

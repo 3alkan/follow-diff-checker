@@ -1,4 +1,4 @@
-from src.ig import FollowerChange, FollowingChange, PendingFollowRequestChange
+from src.ig import FollowerChange, FollowingChange
 
 def parse_followers(data:list)->dict[str, FollowerChange]:
     """Parse follower data into a list of FollowerChange objects."""
@@ -46,29 +46,4 @@ def parse_followings(data:dict)->dict[str, FollowingChange]:
         return followings
     except Exception as e:
         print(f"Error parsing followings: {e}")
-        return {}
-
-def parse_pending_follow_requests(data:dict)->dict[str, PendingFollowRequestChange]:
-    """Parse pending follow request data into a list of PendingFollowRequestChange objects."""
-    try:
-        pending_requests = {}
-        data:list = data.get('relationships_follow_requests_sent')
-        if data:
-            for item in data:
-                item=dict(item)
-                item_data:list=item.get('string_list_data')
-                if item_data:
-                    record:dict=item_data[0]
-                    ts:int=record.get('timestamp')
-                    username:str=record.get('value')
-                    profile_url:str=record.get('href')
-                    if ts and username and profile_url:
-                        pending_requests[username] = PendingFollowRequestChange(
-                            username=username,
-                            profile_url=profile_url,
-                            timestamp=ts
-                        )
-        return pending_requests
-    except Exception as e:
-        print(f"Error parsing pending follow requests: {e}")
         return {}

@@ -13,6 +13,3 @@ class FollowingChange(InstagramEvent):
     def __init__(self, timestamp: str, username: str, profile_url: str):
         super().__init__(event_type="following_change", timestamp=timestamp, username=username, profile_url=profile_url)
 
-class PendingFollowRequestChange(InstagramEvent):
-    def __init__(self, timestamp: str, username: str, profile_url: str):
-        super().__init__(event_type="pending_follow_request_change", timestamp=timestamp, username=username, profile_url=profile_url)
