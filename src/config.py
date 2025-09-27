@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from utils.io import make_path_exists
+from src.utils.io import make_path_exists
 
 class AppConstants:
     app_dir = Path(__file__).resolve().parents[1]

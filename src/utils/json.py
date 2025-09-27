@@ -1,7 +1,74 @@
-from ..ig import FollowerChange, FollowingChange, PendingFollowRequestChange
+from src.ig import FollowerChange, FollowingChange, PendingFollowRequestChange
 
-def parse_followers(data:dict)->dict[str, FollowerChange]:
+def parse_followers(data:list)->dict[str, FollowerChange]:
     """Parse follower data into a list of FollowerChange objects."""
-    followers = {}
-    
-    return followers
+    try:
+        followers = {}
+        for item in data:
+            item=dict(item)
+            item_data:list=getattr(item, 'string_list_data', None)
+            if item_data:
+                record:dict=item_data[0]
+                ts:int=int(getattr(record, 'timestamp', None))
+                username:str=getattr(record, 'value', None)
+                profile_url:str=getattr(record, 'href', None)
+                if ts and username and profile_url:
+                    followers[username] = FollowerChange(
+                        username=username,
+                        profile_url=profile_url,
+                        timestamp=ts
+                    )
+        return followers
+    except Exception as e:
+        print(f"Error parsing followers: {e}")
+        return {}
+
+def parse_followings(data:dict)->dict[str, FollowingChange]:
+    """Parse following data into a list of FollowingChange objects."""
+    try:
+        followings = {}
+        data:list = getattr(data, 'relationships_following', None)
+        if data:
+            for item in data:
+                item=dict(item)
+                item_data:list=getattr(item, 'string_list_data', None)
+                if item_data:
+                    record:dict=item_data[0]
+                    ts:int=int(getattr(record, 'timestamp', None))
+                    username:str=getattr(record, 'value', None)
+                    profile_url:str=getattr(record, 'href', None)
+                    if ts and username and profile_url:
+                        followings[username] = FollowingChange(
+                            username=username,
+                            profile_url=profile_url,
+                            timestamp=ts
+                        )
+        return followings
+    except Exception as e:
+        print(f"Error parsing followings: {e}")
+        return {}
+
+def parse_pending_follow_requests(data:dict)->dict[str, PendingFollowRequestChange]:
+    """Parse pending follow request data into a list of PendingFollowRequestChange objects."""
+    try:
+        pending_requests = {}
+        data:list = getattr(data, 'relationships_follow_requests_sent', None)
+        if data:
+            for item in data:
+                item=dict(item)
+                item_data:list=getattr(item, 'string_list_data', None)
+                if item_data:
+                    record:dict=item_data[0]
+                    ts:int=int(getattr(record, 'timestamp', None))
+                    username:str=getattr(record, 'value', None)
+                    profile_url:str=getattr(record, 'href', None)
+                    if ts and username and profile_url:
+                        pending_requests[username] = PendingFollowRequestChange(
+                            username=username,
+                            profile_url=profile_url,
+                            timestamp=ts
+                        )
+        return pending_requests
+    except Exception as e:
+        print(f"Error parsing pending follow requests: {e}")
+        return {}

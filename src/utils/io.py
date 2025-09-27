@@ -10,7 +10,7 @@ def make_path_exists(path:Path | list[Path]) -> None:
     else:
         path.parent.mkdir(parents=True, exist_ok=True)
 
-def load_json(path:Path) -> dict:
+def load_json(path:Path) -> object:
     """Load JSON data from a file."""
     if not path.exists():
         logging.warning(f"File {path} does not exist.")

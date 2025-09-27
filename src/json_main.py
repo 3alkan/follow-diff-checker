@@ -1,7 +1,8 @@
 import logging
 
-from .config import AppConstants as C
-from utils.io import load_json
+from src.config import AppConstants as C
+from src.utils.io import load_json
+from src.utils.json import parse_followers, parse_followings, parse_pending_follow_requests
 
 def main():
     followers_path = C.json_input_dir / f"{C.followers_basename}.json"
@@ -14,6 +15,14 @@ def main():
 
     if not (followers and followings and pending_follow_requests):
         logging.warning("One or more input files are missing or empty.")
+        return
+    
+    followers=parse_followers(followers)
+    followings=parse_followings(followings)
+    pending_follow_requests=parse_pending_follow_requests(pending_follow_requests)
+
+    if not (followers and followings):
+        logging.warning("Failed to parse followers or followings data.")
         return
     
     

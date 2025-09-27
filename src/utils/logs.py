@@ -4,7 +4,7 @@ import sys
 import datetime
 import time
 
-from ..config import AppConstants as C
+from src.config import AppConstants as C
 
 def setup_logging(level: int = logging.INFO) -> None:
     """Configure root logging to write to logs/app.log and also print to console."""
