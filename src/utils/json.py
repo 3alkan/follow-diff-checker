@@ -6,12 +6,12 @@ def parse_followers(data:list)->dict[str, FollowerChange]:
         followers = {}
         for item in data:
             item=dict(item)
-            item_data:list=getattr(item, 'string_list_data', None)
+            item_data:list=item.get('string_list_data')
             if item_data:
                 record:dict=item_data[0]
-                ts:int=int(getattr(record, 'timestamp', None))
-                username:str=getattr(record, 'value', None)
-                profile_url:str=getattr(record, 'href', None)
+                ts:int=record.get('timestamp')
+                username:str=record.get('value')
+                profile_url:str=record.get('href')
                 if ts and username and profile_url:
                     followers[username] = FollowerChange(
                         username=username,
@@ -27,16 +27,16 @@ def parse_followings(data:dict)->dict[str, FollowingChange]:
     """Parse following data into a list of FollowingChange objects."""
     try:
         followings = {}
-        data:list = getattr(data, 'relationships_following', None)
+        data:list = data.get('relationships_following')
         if data:
             for item in data:
                 item=dict(item)
-                item_data:list=getattr(item, 'string_list_data', None)
+                item_data:list=item.get('string_list_data')
                 if item_data:
                     record:dict=item_data[0]
-                    ts:int=int(getattr(record, 'timestamp', None))
-                    username:str=getattr(record, 'value', None)
-                    profile_url:str=getattr(record, 'href', None)
+                    ts:int=record.get('timestamp')
+                    username:str=record.get('value')
+                    profile_url:str=record.get('href')
                     if ts and username and profile_url:
                         followings[username] = FollowingChange(
                             username=username,
@@ -52,16 +52,16 @@ def parse_pending_follow_requests(data:dict)->dict[str, PendingFollowRequestChan
     """Parse pending follow request data into a list of PendingFollowRequestChange objects."""
     try:
         pending_requests = {}
-        data:list = getattr(data, 'relationships_follow_requests_sent', None)
+        data:list = data.get('relationships_follow_requests_sent')
         if data:
             for item in data:
                 item=dict(item)
-                item_data:list=getattr(item, 'string_list_data', None)
+                item_data:list=item.get('string_list_data')
                 if item_data:
                     record:dict=item_data[0]
-                    ts:int=int(getattr(record, 'timestamp', None))
-                    username:str=getattr(record, 'value', None)
-                    profile_url:str=getattr(record, 'href', None)
+                    ts:int=record.get('timestamp')
+                    username:str=record.get('value')
+                    profile_url:str=record.get('href')
                     if ts and username and profile_url:
                         pending_requests[username] = PendingFollowRequestChange(
                             username=username,
